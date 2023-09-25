@@ -1,9 +1,13 @@
+<template>
+  <ToolBar />
+</template>
+
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import ToolBar from '../components/ToolBar.vue';
 </script>
 
-<template>
-  <main>
-    <TheWelcome />
-  </main>
-</template>
+<style>
+body{
+  margin: 0;
+}
+</style>
