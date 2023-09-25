@@ -1,3 +1,20 @@
+onmessage = (e) => {
+    let main_thread = e.data;
+    if(main_thread.debug){
+        const res = [];
+        for(let i=0;i<60;i++){
+            res.push(sudoku.generate(main_thread.difficulty));
+        }
+        self.postMessage(res);
+        self.close();
+    }else{
+        prob = sudoku.generate(main_thread.difficulty);
+        mygrid = sudoku.board_string_to_grid(prob);
+        self.postMessage(mygrid);
+        self.close();
+    }
+};
+
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -609,7 +626,11 @@
         var rows = [];
         var cur_row = [];
         for(var i in board_string){
-            cur_row.push(board_string[i]);
+            if(board_string[i] == "."){
+                cur_row.push(0);
+            }else{
+                cur_row.push(parseInt(board_string[i]));
+            }
             if(i % 9 == 8){
                 rows.push(cur_row);
                 cur_row = [];

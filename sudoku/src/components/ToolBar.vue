@@ -5,33 +5,19 @@
         </div>
         <div class="item">
             <span>
-                <el-button plain @click="changeDifficulty">{{ difficulty }}</el-button>
+                <el-button plain @click="$emit('changeDiff')">{{ difficulty }}</el-button>
             </span>
         </div>
         <div class="item">
-            <el-button type="primary">重开</el-button>
+            <el-button type="primary" @click="$emit('nextProb')">重开</el-button>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
-const difficulty = ref('easy')
-const difficultyList = [
-    "easy",
-    "hard",
-    "very hard",
-    "insane"
-]
-const changeDifficulty = () => {
-    const index = difficultyList.indexOf(difficulty.value)
-    if (index === difficultyList.length - 1) {
-        difficulty.value = difficultyList[0]
-    } else {
-        difficulty.value = difficultyList[index + 1]
-    }
-}
+defineProps({
+    difficulty: String
+})
 </script>
 
 <style lang="less" scoped>
