@@ -7,6 +7,7 @@
             'hover': isHover,
             'same': isSame,
             'problem': isProblem,
+            'user-input': !isProblem
         }"
         >
             <div class="cell-value-inner">

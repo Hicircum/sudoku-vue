@@ -13,7 +13,7 @@
                 class="game-col"
                 >
                     <SudokuCell
-                    :cellNumber="x"
+                    :cellNumber="handleDigit(x, row, col)"
                     :isHover="isHover(row, col)"
                     :isSelected="isSelected(row, col)"
                     :isSame="isSame(row, col)"
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import SudokuCell from './SudokuCell.vue'
 
 const props = defineProps({
@@ -104,6 +104,90 @@ function isSame(row, col) {
 function isProblem(row, col) {
     return props.problem[row][col] !== 0
 }
+
+function handleDigit(x, row, col) {
+    if(x === 0){
+        return userAnswer.value[row][col]
+    }
+    return props.problem[row][col]
+}
+
+// 键盘事件处理
+window.addEventListener('keydown', function(e){
+  if(e.key == "ArrowUp"){
+    if(selectedCell.value.row == 0){
+      return
+    }
+    selectedCell.value.row -= 1
+  }
+  if(e.key == "ArrowDown"){
+    if(selectedCell.value.row == 8){
+      return
+    }
+    selectedCell.value.row += 1
+  }
+  if(e.key == "ArrowLeft"){
+    if(selectedCell.value.col == 0){
+      return
+    }
+    selectedCell.value.col -= 1
+  }
+  if(e.key == "ArrowRight"){
+    if(selectedCell.value.col == 8){
+      return
+    }
+    selectedCell.value.col += 1
+  }
+  if(e.key == "Escape"){
+    selectedCell.value.row = -1
+    selectedCell.value.col = -1
+  }
+})
+
+window.addEventListener('keydown', (e) => {
+    if(selectedCell.value.row === -1 || selectedCell.value.col === -1){
+        return
+    }
+    if(e.key >= 1 && e.key <= 9){
+        if(isProblem(selectedCell.value.row, selectedCell.value.col)){
+            console.log("problem can't be changed")
+            return
+        }
+        userAnswer.value[selectedCell.value.row][selectedCell.value.col] = parseInt(e.key)
+    }
+    if(e.key === 'Backspace'){
+        userAnswer.value[selectedCell.value.row][selectedCell.value.col] = 0
+    }
+})
+
+// 在problem变化时，清空userAnswer，恢复selectedCell
+watch(() => props.problem, () => {
+    for(let i = 0; i < 9; i++){
+        for(let j = 0; j < 9; j++){
+            userAnswer.value[i][j] = 0
+        }
+    }
+    selectedCell.value.row = -1
+    selectedCell.value.col = -1
+    console.log("problem changed")
+})
+
+// 在userAnswer变化时，判断是否完成
+watch(userAnswer.value, () => {
+    let flag = true
+    for(let i = 0; i < 9; i++){
+        for(let j = 0; j < 9; j++){
+            if(props.problem[i][j] === 0){
+                if(userAnswer.value[i][j] === 0){
+                    flag = false
+                }
+            }
+        }
+    }
+    if(flag){
+        console.log("finished")
+    }
+})
 </script>
 
 <style lang="less" scoped>
