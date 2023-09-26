@@ -2,6 +2,12 @@
     <div class="cell">
         <div
         class="cell-value"
+        :class="{
+            'selected': isSelected,
+            'hover': isHover,
+            'same': isSame,
+            'problem': isProblem,
+        }"
         >
             <div class="cell-value-inner">
                 {{ handleZero(cellNumber) }}
@@ -13,6 +19,10 @@
 <script setup>
 defineProps({
     cellNumber: Number,
+    isHover: Boolean,
+    isSelected: Boolean,
+    isSame: Boolean,
+    isProblem: Boolean,
 })
 
 function handleZero(num) {
@@ -42,13 +52,13 @@ function handleZero(num) {
         background-color: #dadada;
     }
     .selected{
-        background-color: #caff8a;
+        background-color: #c3fc7e;
     }
     .hover{
         background-color: #caff8a !important;
     }
     .same{
-        background-color: #f2fde5 !important;
+        background-color: #f2fde5;
     }
     .user-input{
         color: #5400c9 !important;

@@ -7,10 +7,17 @@
               <tr v-for="(i, row) in problem" class="game-row">
                 <td
                 v-for="(x, col) in i"
+                @mouseenter="mouseEnter(row, col)"
+                @mouseleave="mouseLeave"
+                @click="clickCell(row, col)"
                 class="game-col"
                 >
                     <SudokuCell
                     :cellNumber="x"
+                    :isHover="isHover(row, col)"
+                    :isSelected="isSelected(row, col)"
+                    :isSame="isSame(row, col)"
+                    :isProblem="isProblem(row, col)"
                     />
                 </td>
               </tr>
@@ -25,9 +32,78 @@
 import { ref } from 'vue'
 import SudokuCell from './SudokuCell.vue'
 
-defineProps({
+const props = defineProps({
     problem: Array
 })
+
+const hoverCell = ref({
+    row: -1,
+    col: -1
+})
+
+const selectedCell = ref({
+    row: -1,
+    col: -1
+})
+
+const userAnswer = ref([
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0]
+])
+
+// 鼠标事件处理
+function mouseEnter(row, col) {
+    hoverCell.value.row = row
+    hoverCell.value.col = col
+}
+
+function mouseLeave() {
+    hoverCell.value.row = -1
+    hoverCell.value.col = -1
+}
+
+function clickCell(row, col) {
+    if(selectedCell.value.row === row && selectedCell.value.col === col){
+        selectedCell.value.row = -1
+        selectedCell.value.col = -1
+    }else{
+        selectedCell.value.row = row
+        selectedCell.value.col = col
+    }
+}
+
+// 单元格样式处理
+function isHover(row, col) {
+    return hoverCell.value.row === row && hoverCell.value.col === col
+}
+
+function isSelected(row, col) {
+    return selectedCell.value.row === row && selectedCell.value.col === col
+}
+
+function isSame(row, col) {
+    if(selectedCell.value.row == row && selectedCell.value.col == col){
+        return false
+    }
+    if(selectedCell.value.row == row || selectedCell.value.col == col){
+        return true
+    }
+    if(Math.floor(selectedCell.value.row / 3) == Math.floor(row / 3) 
+        && Math.floor(selectedCell.value.col / 3) == Math.floor(col / 3)){
+        return true
+    }
+}
+
+function isProblem(row, col) {
+    return props.problem[row][col] !== 0
+}
 </script>
 
 <style lang="less" scoped>
