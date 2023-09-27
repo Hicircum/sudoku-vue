@@ -1,21 +1,30 @@
 <template>
-  <ToolBar @change-diff="changeDifficulty" @next-prob="nextProblem" :difficulty="difficulty"/>
+  <ToolBar @change-diff="changeDifficulty" @next-prob="genProblem" :difficulty="difficulty"/>
   <div class="sudoku-conatiner">
+    <div class="selector">
+      <el-radio-group v-model="problemIndex">
+        <el-radio-button
+        v-for="item in problemList.length"
+        :label="item" />
+      </el-radio-group>
+    </div>
     <Sudoku :problem="problem"/>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUpdated } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import ToolBar from '../components/ToolBar.vue';
 import Sudoku from '../components/Sudoku.vue';
 
 
 const problem = ref([])
-const easyProblem = ref([])
-const mediumProblem = ref([])
-const hardProblem = ref([])
-const veryHardProblem = ref([])
+// const easyProblem = ref([])
+// const mediumProblem = ref([])
+// const hardProblem = ref([])
+// const veryHardProblem = ref([])
+const problemList = ref([])
+const problemIndex = ref(0)
 
 
 const difficulty = ref('easy')
@@ -43,63 +52,71 @@ function genProblem() {
     worker.onmessage = (e) => {
       results.push(e.data)
       if (results.length === 10) {
-        problem.value = results.pop()
-        console.log("gen new problem " + difficulty.value)
-        if(difficulty.value === 'easy'){
-          easyProblem.value = results
-        }
-        if(difficulty.value === 'medium'){
-          mediumProblem.value = results
-        }
-        if(difficulty.value === 'hard'){
-          hardProblem.value = results
-        }
-        if(difficulty.value === 'very-hard'){
-          veryHardProblem.value = results
-        }
+        // problem.value = results.pop()
+        // console.log("gen new problem " + difficulty.value)
+        // if(difficulty.value === 'easy'){
+        //   easyProblem.value = results
+        // }
+        // if(difficulty.value === 'medium'){
+        //   mediumProblem.value = results
+        // }
+        // if(difficulty.value === 'hard'){
+        //   hardProblem.value = results
+        // }
+        // if(difficulty.value === 'very-hard'){
+        //   veryHardProblem.value = results
+        // }
+        problemList.value = results;
+        problemIndex.value = 1;
+        problem.value = problemList.value[0]
       }
     }
     workers.push(worker)
   }
 }
 
-function nextProblem() {
-  if(difficulty.value === 'easy'){
-    if(easyProblem.value.length === 0){
-      genProblem()
-    }else{
-      problem.value = easyProblem.value.pop()
-      console.log(easyProblem.value.length)
-    }
-  }
-  if(difficulty.value === 'medium'){
-    if(mediumProblem.value.length === 0){
-      genProblem()
-    }else{
-      problem.value = mediumProblem.value.pop()
-      console.log(mediumProblem.value.length)
-    }
-  }
-  if(difficulty.value === 'hard'){
-    if(hardProblem.value.length === 0){
-      genProblem()
-    }else{
-      problem.value = hardProblem.value.pop()
-      console.log(hardProblem.value.length)
-    }
-  }
-  if(difficulty.value === 'very-hard'){
-    if(veryHardProblem.value.length === 0){
-      genProblem()
-    }else{
-      problem.value = veryHardProblem.value.pop()
-      console.log(veryHardProblem.value.length)
-    }
-  }
-}
+// function nextProblem() {
+//   if(difficulty.value === 'easy'){
+//     if(easyProblem.value.length === 0){
+//       genProblem()
+//     }else{
+//       problem.value = easyProblem.value.pop()
+//       console.log(easyProblem.value.length)
+//     }
+//   }
+//   if(difficulty.value === 'medium'){
+//     if(mediumProblem.value.length === 0){
+//       genProblem()
+//     }else{
+//       problem.value = mediumProblem.value.pop()
+//       console.log(mediumProblem.value.length)
+//     }
+//   }
+//   if(difficulty.value === 'hard'){
+//     if(hardProblem.value.length === 0){
+//       genProblem()
+//     }else{
+//       problem.value = hardProblem.value.pop()
+//       console.log(hardProblem.value.length)
+//     }
+//   }
+//   if(difficulty.value === 'very-hard'){
+//     if(veryHardProblem.value.length === 0){
+//       genProblem()
+//     }else{
+//       problem.value = veryHardProblem.value.pop()
+//       console.log(veryHardProblem.value.length)
+//     }
+//   }
+// }
 
 onMounted(() => {
-  nextProblem()
+  // nextProblem()
+  genProblem()
+})
+
+watch(problemIndex, () => {
+  problem.value = problemList.value[problemIndex.value - 1]
 })
 </script>
 
@@ -108,6 +125,10 @@ body{
   margin: 0;
 }
 .sudoku-conatiner{
-  margin-top: 20px;
+  margin-top: 10px;
+  .selector{
+    margin-bottom: 10px;
+    text-align: center;
+  }
 }
 </style>
