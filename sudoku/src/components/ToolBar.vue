@@ -10,6 +10,7 @@
         </div>
         <div class="item">
             <el-button type="primary" @click="$emit('nextProb')">重开</el-button>
+            <el-button type="primary" @click="$emit('autoSolve')">题解</el-button>
         </div>
     </div>
 </template>

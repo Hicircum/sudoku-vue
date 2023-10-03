@@ -1,11 +1,10 @@
 onmessage = (e) => {
     let main_thread = e.data;
-    if(main_thread.debug){
-        const res = [];
-        for(let i=0;i<60;i++){
-            res.push(sudoku.generate(main_thread.difficulty));
-        }
-        self.postMessage(res);
+    if(main_thread.solve){
+        res = sudoku.solve(main_thread.problem);
+        mygrid = sudoku.board_string_to_grid(res);
+        let index = main_thread.index;
+        self.postMessage([index, mygrid]);
         self.close();
     }else{
         prob = sudoku.generate(main_thread.difficulty);
@@ -645,7 +644,11 @@ onmessage = (e) => {
         var board_string = "";
         for(var r = 0; r < 9; ++r){
             for(var c = 0; c < 9; ++c){
-                board_string += board_grid[r][c];
+                if(board_grid[r][c] == 0){
+                    board_string += ".";
+                }else{
+                    board_string += board_grid[r][c].toString();
+                }
             }   
         }
         return board_string;

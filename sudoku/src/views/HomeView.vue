@@ -1,5 +1,10 @@
 <template>
-  <ToolBar @change-diff="changeDifficulty" @next-prob="genProblem" :difficulty="difficulty"/>
+  <ToolBar
+  @change-diff="changeDifficulty"
+  @next-prob="genProblem"
+  @auto-solve="solveProblem"
+  :difficulty="difficulty"
+  />
   <div class="sudoku-conatiner">
     <div class="selector">
       <el-radio-group v-model="problemIndex">
@@ -48,7 +53,7 @@ function genProblem() {
   const results = []
   for (let i = 0; i < 10; i++) {
     const worker = new Worker(new URL('@/worker/sudoku.js', import.meta.url))
-    worker.postMessage({"difficulty": difficulty.value, "debug": false})
+    worker.postMessage({"difficulty": difficulty.value, "solve": false})
     worker.onmessage = (e) => {
       results.push(e.data)
       if (results.length === 10) {
@@ -67,6 +72,42 @@ function genProblem() {
         //   veryHardProblem.value = results
         // }
         problemList.value = results;
+        problemIndex.value = 1;
+        problem.value = problemList.value[0]
+      }
+    }
+    workers.push(worker)
+  }
+}
+
+function solveProblem() {
+  const workers = []
+  const results = []
+  for (let i = 0; i < 10; i++) {
+    const worker = new Worker(new URL('@/worker/sudoku.js', import.meta.url))
+    let boardStr = "";
+    for(let j = 0; j < 9; j++){
+      for(let k = 0; k < 9; k++){
+        if(problemList.value[i][j][k] === 0){
+          boardStr += "."
+        }else{
+          boardStr += problemList.value[i][j][k].toString();
+        }
+      }
+    }
+    worker.postMessage({"solve": true, "problem": boardStr, "index": i})
+    worker.onmessage = (e) => {
+      results.push(e.data);
+      if (results.length === 10) {
+        const temp = []
+        for(let i = 0; i < 10; i++){
+          for(let j = 0; j < 10; j++){
+            if(results[j][0] === i){
+              temp.push(results[j][1])
+            }
+          }
+        }
+        problemList.value = temp;
         problemIndex.value = 1;
         problem.value = problemList.value[0]
       }
