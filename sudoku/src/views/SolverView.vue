@@ -1,26 +1,23 @@
 <template>
-  <div class="actions">
-    <div class="btn">
-      <el-button size="large">Large</el-button>
-    </div>
-    <div class="btn">
-      <el-button size="large">Large</el-button>
-    </div>
-    <div class="btn">
-      <el-button size="large">Large</el-button>
-    </div>
-  </div>
+  <Sudoku :problem="problem" :is-sovler="true" />
 </template>
 
+<script setup>
+import { ref } from 'vue';
+import Sudoku from '../components/Sudoku.vue';
+const problem = ref([
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0]
+])
+</script>
+
 <style lang="less" scoped>
-.actions {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 100%;
-  .btn{
-    text-align: center;
-    margin-bottom: 20px;
-  }
-}
+
 </style>

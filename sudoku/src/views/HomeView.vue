@@ -13,7 +13,7 @@
         :label="item" />
       </el-radio-group>
     </div>
-    <Sudoku :problem="problem"/>
+    <Sudoku :problem="problem" :isSovler="false"/>
   </div>
 </template>
 
@@ -110,6 +110,11 @@ function solveProblem() {
         problemList.value = temp;
         problemIndex.value = 1;
         problem.value = problemList.value[0]
+        ElNotification({
+        title: 'Success',
+        message: '以为您求解所有题目',
+        type: 'success',
+      })
       }
     }
     workers.push(worker)

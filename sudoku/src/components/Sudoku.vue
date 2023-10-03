@@ -1,4 +1,7 @@
 <template>
+    <div class="sovle" v-if="isSovler">
+        <el-button type="primary" @click="getAns">题解</el-button>
+    </div>
     <div class="game-warp">
       <div class="game-board">
         <div class="game-inner">
@@ -34,7 +37,8 @@ import { ref, watch } from 'vue'
 import SudokuCell from './SudokuCell.vue'
 
 const props = defineProps({
-    problem: Array
+    problem: Array,
+    isSovler: Boolean
 })
 
 const hoverCell = ref({
@@ -112,6 +116,42 @@ function handleDigit(x, row, col) {
     }
     return props.problem[row][col]
 }
+
+// 求解用户输入
+function getAns(){
+    if(!props.isSovler){
+        return
+    }
+    const worker = new Worker(new URL('@/worker/sudoku.js', import.meta.url))
+    let boardStr = "";
+    for(let j = 0; j < 9; j++){
+        for(let k = 0; k < 9; k++){
+            if(userAnswer.value[j][k] === 0){
+                boardStr += "."
+            }else{
+                boardStr += userAnswer.value[j][k].toString();
+            }
+        }
+    }
+    worker.postMessage({"solve": true, "problem": boardStr})
+    worker.onmessage = (e) => {
+        const ans = e.data
+        console.log(ans)
+        for(let i = 0; i < 9; i++){
+            for(let j = 0; j < 9; j++){
+                userAnswer.value[i][j] = ans[1][i][j]
+            }
+        }
+    }
+    worker.onerror = (e) => {
+        ElNotification({
+            title: 'Error',
+            message: e.message,
+            type: 'error',
+        })
+    }
+}
+
 
 function isValid(row, col) {
     // 检查是否有重复数字，有则返回false
@@ -335,5 +375,11 @@ watch(userAnswer.value, () => {
   backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1;
+}
+
+.sovle{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 </style>
