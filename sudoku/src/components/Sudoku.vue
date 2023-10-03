@@ -18,6 +18,7 @@
                     :isSelected="isSelected(row, col)"
                     :isSame="isSame(row, col)"
                     :isProblem="isProblem(row, col)"
+                    :isErr="!isValid(row, col)"
                     />
                 </td>
               </tr>
@@ -110,6 +111,36 @@ function handleDigit(x, row, col) {
         return userAnswer.value[row][col]
     }
     return props.problem[row][col]
+}
+
+function isValid(row, col) {
+    // 检查是否有重复数字，有则返回false
+    if(getNum(row, col) === 0){
+        return true
+    }
+    for(let i = 0; i < 9; i++){
+        if(i !== col && getNum(row, i) === getNum(row, col)){
+            return false
+        }
+        if(i !== row && getNum(i, col) === getNum(row, col)){
+            return false
+        }
+    }
+    for(let i = Math.floor(row / 3) * 3; i < Math.floor(row / 3) * 3 + 3; i++){
+        for(let j = Math.floor(col / 3) * 3; j < Math.floor(col / 3) * 3 + 3; j++){
+            if(i !== row && j !== col && getNum(i, j) === getNum(row, col)){
+                return false
+            }
+        }
+    }
+    return true
+}
+
+function getNum(row, col) {
+    if(props.problem[row][col] !== 0){
+        return props.problem[row][col]
+    }
+    return userAnswer.value[row][col]
 }
 
 // 键盘事件处理

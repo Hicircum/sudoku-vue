@@ -7,7 +7,8 @@
             'hover': isHover,
             'same': isSame,
             'problem': isProblem,
-            'user-input': !isProblem
+            'user-input': !isProblem,
+            'err': isErr
         }"
         >
             <div class="cell-value-inner">
@@ -24,6 +25,7 @@ defineProps({
     isSelected: Boolean,
     isSame: Boolean,
     isProblem: Boolean,
+    isErr: Boolean
 })
 
 function handleZero(num) {
