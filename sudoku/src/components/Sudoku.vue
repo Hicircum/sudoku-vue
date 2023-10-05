@@ -1,6 +1,9 @@
 <template>
     <div class="sovle" v-if="isSovler">
         <el-button type="primary" @click="getAns">题解</el-button>
+        <RouterLink to="/">
+            <el-button type="success">主页</el-button>
+        </RouterLink>
     </div>
     <div class="game-warp">
       <div class="game-board">
@@ -34,6 +37,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 import SudokuCell from './SudokuCell.vue'
 
 const props = defineProps({
@@ -381,5 +385,9 @@ watch(userAnswer.value, () => {
   display: flex;
   justify-content: center;
   margin-top: 10px;
+  margin-bottom: 10px;
+  a{
+    margin-left: 10px;
+  }
 }
 </style>

@@ -11,11 +11,15 @@
         <div class="item">
             <el-button type="primary" @click="$emit('nextProb')">重开</el-button>
             <el-button type="primary" @click="$emit('autoSolve')">题解</el-button>
+            <RouterLink to="/solver">
+                <el-button type="primary">求解器</el-button>
+            </RouterLink>
         </div>
     </div>
 </template>
 
 <script setup>
+import { RouterLink } from 'vue-router';
 defineProps({
     difficulty: String
 })
@@ -47,6 +51,9 @@ defineProps({
             font-size: 20px;
             padding-left: 10px;
             padding-right: 10px;
+        }
+        a{
+            padding-left: 10px;
         }
     }
 }
